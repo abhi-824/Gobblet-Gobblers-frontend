@@ -17,5 +17,5 @@ export interface GameState {
   status: "in_progress" | "win" | "draw" | "lose";
   currentPlayer: string;
   players: Player[];
-  board: (null | { ownerId?: string; size: PieceSize })[][];
+  board: (null | { ownerId?: string; pieceId?: string; size: PieceSize })[][];
 }

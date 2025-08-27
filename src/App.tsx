@@ -41,7 +41,6 @@ export default function App() {
     );
   }, []);
 
-  // TODO: refactor for returing simpler
   // Watch backend status for win/lose/draw
   useEffect(() => {
     if (!game) return;
@@ -110,12 +109,19 @@ export default function App() {
     if (!gameId || !game) return;
     const { over, active } = event;
     if (!over) return;
-
-    const [pieceType, pieceId] = active.id.toString().split(":");
-    if (!pieceType || !pieceId) return;
-    if (!over.id.toString().startsWith("cell-")) return;
+    if (!over.id.toString().startsWith("cell-")) return; // only allow dropping inside board
 
     const [, row, col] = over.id.toString().split("-").map(Number);
+
+    let pieceId: string | null = null;
+
+    // Case 1: piece from side panel
+    if (active.id.toString().startsWith("alien:") || active.id.toString().startsWith("robot:") || active.id.toString().startsWith("board:")) {
+      const [, pid] = active.id.toString().split(":");
+      pieceId = pid;
+    }
+
+    if (!pieceId) return;
 
     makeMove.mutate(
       {
@@ -197,7 +203,8 @@ export default function App() {
                   row.map((cell, c) => (
                     <DroppableCell key={`${r}-${c}`} row={r} col={c}>
                       {cell ? (
-                        <GamePiece
+                        <DraggablePiece
+                          id={`board:${cell.pieceId}`} // 👈 needs pieceId from backend
                           type={cell.ownerId === human?.id ? "alien" : "robot"}
                           size={cell.size.toLowerCase() as GamePieceSize}
                         />

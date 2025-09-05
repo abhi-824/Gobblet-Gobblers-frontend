@@ -9,6 +9,7 @@ export interface Piece {
 export interface Player {
   id: string;
   type: "human" | "computer";
+  name?: string;
   pieces: Piece[];
 }
 
@@ -16,6 +17,7 @@ export interface GameState {
   gameId: string;
   status: "in_progress" | "win" | "draw" | "lose";
   currentPlayer: string;
+  winner: Player | null;
   players: Player[];
   board: (null | { ownerId?: string; pieceId?: string; size: PieceSize })[][];
 }

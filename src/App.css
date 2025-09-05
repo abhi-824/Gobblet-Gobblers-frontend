@@ -40,3 +40,59 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Custom animations for game loaders */
+@keyframes cosmic-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes cosmic-glow {
+  0%, 100% {
+    box-shadow: 0 0 0px #B57BFE;
+  }
+  50% {
+    box-shadow: 0 0 20px #B57BFE, 0 0 40px #B57BFE;
+  }
+}
+
+.cosmic-pulse {
+  animation: cosmic-pulse 2s ease-in-out infinite;
+}
+
+.cosmic-glow {
+  animation: cosmic-glow 1.5s ease-in-out infinite;
+}
+
+/* Smooth transitions for drag and drop */
+.cursor-grab {
+  cursor: grab;
+}
+
+.cursor-grabbing {
+  cursor: grabbing;
+}
+
+/* Optimistic move animations */
+.optimistic-move {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading spinner enhancements */
+.loading-spinner {
+  border: 4px solid transparent;
+  border-top: 4px solid #B57BFE;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

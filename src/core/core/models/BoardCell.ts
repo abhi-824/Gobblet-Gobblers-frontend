@@ -40,5 +40,11 @@ export class BoardCell {
     });
     return clonedCell;
   }
+  toJSON() {
+    return {
+      stack: this.stack.map(p => p.id), // just piece ids
+    };
+  }
+  
 
 }

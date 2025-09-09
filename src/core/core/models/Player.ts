@@ -31,4 +31,16 @@ export class Player {
     });
     return cloned;
   }
+  toJSON() {
+    return {
+      id: this.id,
+      type: this.type,
+      name: this.name,
+      pieces: this.pieces.map(p => ({
+        id: p.id,
+        size: p.size,
+        ownerId: this.id,
+      })),
+    };
+  }
 }

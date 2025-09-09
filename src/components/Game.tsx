@@ -276,7 +276,7 @@ export function Game() {
       </div>
     );
   }
-
+  console.log(game)
   const human = game.players.find((p) => p.type === "human");
   const computer = game.players.find((p) => p.type === "computer");
 

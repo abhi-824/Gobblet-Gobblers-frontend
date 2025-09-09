@@ -17,4 +17,12 @@ export class GamePiece {
     clone(newOwner: Player): GamePiece {
         return new GamePiece(this.size, newOwner, this.id);
     }    
+    toJSON() {
+        return {
+          id: this.id,
+          size: this.size,
+          ownerId: this.owner.id, // reference only
+        };
+      }
+    
 }

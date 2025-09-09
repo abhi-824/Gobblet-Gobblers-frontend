@@ -39,6 +39,8 @@ export class GameService {
     });
 
     const game = new Game(board, [p1, p2], p1);
+    // Persist initial canonical piece registry for reliable hydration
+    await this.pieces.saveInitialPieces(id, [p1, p2]);
     await this.games.saveGame(id, game, { mode, difficulty, createdAt: Date.now() });
     console.log(`[GameService:createGame] id=${id} mode=${mode} difficulty=${difficulty}`);
     return toPublicGameDTO(id, game);
@@ -78,17 +80,17 @@ export class GameService {
   ) {
     const { game, meta } = await this.games.getGameById(gameId);
     if (!game) throw new Error("Game not found");
-
+    
     // Resolve player & piece from in-memory piece store
     const player = game.players.find(p => p.id === playerId);
     if (!player) throw new Error("Player not found");
     console.log(player)
-
+    
     // Try resolve from player's reserve first
     let piece = game.players
     .flatMap(p => p.getAvailablePieces())
     .find(p => p.id === pieceId);
-
+    
     // If not in reserves, try resolve from board stacks
     if (!piece) {
       const onBoard = game.board.findPieceById(pieceId);
@@ -96,27 +98,26 @@ export class GameService {
         piece = onBoard;
       }
     }
-
+    
     if (!piece) {
       const err = new Error("Piece not found");
       (err as any).statusCode = 404;
       throw err;
     }
-
+    
     if (piece.owner.id != playerId) {
       const err = new Error("Not your piece");
       (err as any).statusCode = 403;
       throw err;
     }
-
+    
     const from = game.board.findPiecePosition(piece);
-
+    
     const move = new Move(player, from, to, piece);
     console.log(`[GameService:makeMove] gameId=${gameId} playerId=${playerId} pieceId=${pieceId} from=${from ?? null} to=${to}`);
     const ok = game.makeMove(move);
-    console.log(ok)
+    console.log("ok: ",ok)
     if (!ok) {
-    console.log("hey")
 
       const err = new Error("Invalid move");
       (err as any).statusCode = 400;
@@ -125,15 +126,12 @@ export class GameService {
     
     await this.moves.append(gameId, move);
     await this.games.updateGame(gameId, game);
-    console.log("hery")
     
 
     // If next is bot (PVC), auto-move bot
     const next = game.currentPlayer;
-    console.log("hey")
 
     if (next.type === "computer") {
-      console.log("hey")
       const strat = this.botFactory.create(
         (meta?.difficulty as BotDifficulty) ?? BotDifficulty.EASY
       );

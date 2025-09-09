@@ -22,6 +22,7 @@ export function useCreateGame() {
 
 // Start Game
 async function startGame(gameId: string) {
+  console.log(gameId)
   const res = await controller.startGame({ id: gameId });
   if (res.error) {
     console.error("StartGame error:", res.error);

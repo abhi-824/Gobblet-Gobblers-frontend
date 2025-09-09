@@ -58,5 +58,14 @@ export class Game {
 
     return cloned;
   }
-
+  toJSON() {
+    return {
+      players: this.players.map(p => p.toJSON()),
+      board: this.board.toJSON(),
+      currentPlayerId: this.currentPlayer.id,
+      status: this.status,
+      winnerId: this.winner ? this.winner.id : null,
+      // maybe moves/history if you store them
+    };
+  }
 }

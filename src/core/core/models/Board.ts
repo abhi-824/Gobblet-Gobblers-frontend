@@ -100,5 +100,17 @@ export class Board {
       
         return clonedBoard;
       }
+
+      placePieceAt(piece: GamePiece, pos: [number, number]): void {
+        const [row, col] = pos;
+        this.getCell(row, col).place(piece);
+      }
+      toJSON() {
+        return {
+          size: this.size,
+          grid: this.grid.map(row => row.map(cell => cell.toJSON())),
+        };
+      }
+      
           
 }

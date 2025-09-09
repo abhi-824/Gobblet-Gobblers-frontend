@@ -24,6 +24,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { ResultDialog } from "./ResultDialog";
 import { useParams, useNavigate } from "react-router-dom";
+import { GuideOverlay } from "./GuideOverlay";
 
 export function Game() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -39,6 +40,7 @@ export function Game() {
     position: { x: number; y: number };
   } | null>(null);
   const [showPlayAgainButton, setShowPlayAgainButton] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const queryClient = useQueryClient();
 
   const startGame = useStartGame();
@@ -69,6 +71,9 @@ export function Game() {
           // Hide game start loader after a delay for better UX
           setTimeout(() => {
             setIsGameStarting(false);
+            // Show guide if not skipped previously
+            const skipped = localStorage.getItem("avr:guide:skip") === "1";
+            if (!skipped) setShowGuide(true);
           }, 2000);
         },
         onError: () => {
@@ -398,6 +403,17 @@ export function Game() {
           winner={game?.winner}
         />
       </AnimatePresence>
+
+      {/* Guide Overlay (only in game view) */}
+      {showGuide && (
+        <GuideOverlay
+          onClose={() => setShowGuide(false)}
+          onSkipForever={() => {
+            localStorage.setItem("avr:guide:skip", "1");
+            setShowGuide(false);
+          }}
+        />
+      )}
     </>
   );
 }
